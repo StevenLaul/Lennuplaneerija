@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="EN">
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Lennuplaan</title>
@@ -44,7 +44,7 @@
         <td th:text="${flight.destination}">Sihtkoht</td>
         <td th:text="${flight.time}">Aeg</td>
         <td th:text="${flight.price}">Hind</td>
-        <td><a th:href="@{'/flights/' + ${flight.id}}">"Vaata detaile</a></td>
+        <td><a th:href="@{'/flights/' + ${flight.id}}">Vaata detaile</a></td>
     </tr>
     </tbody>
 </table>
