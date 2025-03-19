@@ -1,101 +1,171 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Lennu detailid</title>
     <style>
-        table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-bottom: 20px;
+        /* Üldised stiilid */
+        body {
+          font-family: Arial, sans-serif;
+          background: #f7f7f7;
+          margin: 0;
+          padding: 20px;
+          color: #333;
         }
-        th, td {
-            border: 1px solid #000;
-            padding: 8px;
-            text-align: left;
+        .container {
+          max-width: 900px;
+          margin: auto;
+          background: #fff;
+          padding: 20px;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
-        th {
-            background-color: #f2f2f2;
+        h1, h2, h3 {
+          color: #333;
+          margin-bottom: 20px;
         }
-        form {
-            margin-top: 20px;
+
+        /* Lennu põhiteave */
+        .flight-info p {
+          margin: 5px 0;
+        }
+
+        /* Istekohtade plaan: kasutame CSS Gridi */
+        .seat-map {
+          display: grid;
+          grid-template-columns: repeat(6, 1fr); /* 6 istet igas reas */
+          grid-gap: 10px;
+          margin-bottom: 20px;
+        }
+        .seat {
+          background: #e0e0e0;
+          border: 1px solid #ccc;
+          padding: 15px;
+          text-align: center;
+          font-weight: bold;
+          cursor: pointer;
+          transition: background 0.3s;
+        }
+        .seat.available {
+          background: #dff0d8;  /* roheline, kui vaba */
+        }
+        .seat.taken {
+          background: #f2dede;  /* punakane, kui hõivatud */
+        }
+        .seat:hover {
+          opacity: 0.8;
+        }
+
+        /* Vormi stiil */
+        .form-section {
+          margin-top: 20px;
+          padding: 15px;
+          border: 1px solid #ccc;
+          background: #fafafa;
+        }
+        .form-group {
+          margin-bottom: 15px;
         }
         label {
-            display: block;
-            margin-bottom: 5px;
+          display: block;
+          margin-bottom: 5px;
         }
         input[type="number"],
         input[type="checkbox"] {
-            margin-right: 5px;
+          padding: 8px;
+          margin-top: 5px;
         }
         button {
-            margin-top: 10px;
-            padding: 8px 12px;
+          background: #007bff;
+          color: white;
+          border: none;
+          padding: 10px 20px;
+          cursor: pointer;
+          transition: background 0.3s;
         }
+        button:hover {
+          background: #0056b3;
+        }
+
+        /* Loendi stiil (soovitatud istekohad) */
+        .result-list {
+          list-style: none;
+          padding: 0;
+        }
+        .result-list li {
+          background: #f1f1f1;
+          margin-bottom: 5px;
+          padding: 10px;
+          border: 1px solid #ddd;
+        }
+
         a {
-            text-decoration: none;
-            color: blue;
+          text-decoration: none;
+          color: #007bff;
+        }
+        a:hover {
+          text-decoration: underline;
         }
     </style>
 </head>
 <body>
-<h1>Lennu detailid</h1>
-<!-- Kuvab valitud lennu peamise info ehk lennunumber, sihtkoht, aeg, kuupäev ja hind -->
-<p><strong>ID:</strong> <span th:text="${flight.id}"></span></p>
-<p><strong>Kuupäev:</strong> <span th:text="${flight.date}"></span></p>
-<p><strong>Sihtkoht:</strong> <span th:text="${flight.destination}"></span></p>
-<p><strong>Aeg:</strong> <span th:text="${flight.time}"></span></p>
-<p><strong>Hind:</strong> <span th:text="${flight.price}"></span></p>
+<div class="container">
+    <h1>Lennu detailid</h1>
+    <!-- Lennu põhiteave -->
+    <div class="flight-info">
+        <p><strong>ID:</strong> <span th:text="${flight.id}"></span></p>
+        <p><strong>Sihtkoht:</strong> <span th:text="${flight.destination}"></span></p>
+        <p><strong>Kuupäev:</strong> <span th:text="${flight.date}"></span></p>
+        <p><strong>Lennu aeg:</strong> <span th:text="${flight.time}"></span></p>
+        <p><strong>Hind:</strong> <span th:text="${flight.price}"></span></p>
+    </div>
 
-<h2>Istekohad</h2>
-<!-- Tabel kus on näha kõiki istekohti lennukis -->
-<table>
-    <thead>
-    <tr>
-        <th>Istekoht</th>
-        <th>Akna kõrval</th>
-        <th>Rohkem jalaruumi</th>
-        <th>Lähemal väljapääsule</th>
-        <th>Koht võetud</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="seat:  ${seatMap}">
-        <td th:text="${seat.seatId}">1A</td>
-        <td th:text="${seat.window}">Ei</td>
-        <td th:text="${seat.extraLegroom}">Ei</td>
-        <td th:text="${seat.nearExit}">Jah</td>
-        <td th:text="${seat.taken}">Ei</td>
-    </tr>
-    </tbody>
-</table>
+    <h2>Istekohad (Lennuki plaan)</h2>
+    <!-- Istekohtade plaan CSS Gridiga -->
+    <div class="seat-map">
+        <div th:each="seat : ${seatMap}"
+             class="seat"
+             th:text="${seat.seatId}"
+             th:classappend="${seat.taken} ? ' taken' : ' available'">
+            12A
+        </div>
+    </div>
 
-<h2>Soovitame seda kohta</h2>
-<!-- Vorm, kus kasutaja saab valida eelistused soovitatud istekohtade saamiseks -->
-<form th:action="@{'/flights/' + ${flight.id} + '/recommend'}" method="post">
-    <label>Istekohtade arv:
-        <input type="number" name="count" min="1" required />
-    </label>
-    <label>
-        <input type="checkbox" name="window" /> Soovin akna all olevat istekohta
-    </label>
-    <label>
-        <input type="checkbox" name="extraLegroom" /> Soovin rohkem jalaruumi
-    </label>
-    <label>
-        <input type="checkbox" name="nearExit" /> Soovin lähemale väljapääsule
-    </label>
-    <button type="submit">Soovita istekohta</button>
-</form>
+    <!-- Vormi osa, kus kasutaja saab sisestada eelistused -->
+    <div class="form-section">
+        <h2>Soovitatud istekohti</h2>
+        <form th:action="@{'/flights/' + ${flight.id} + '/recommend'}" method="post">
+            <div class="form-group">
+                <label>Istekohtade arv:
+                    <input type="number" name="count" min="1" required style="width: 100px;"/>
+                </label>
+            </div>
+            <div class="form-group">
+                <label><input type="checkbox" name="window" /> Soovin akna all olevat istet</label>
+            </div>
+            <div class="form-group">
+                <label><input type="checkbox" name="extraLegroom" /> Soovin rohkem jalaruumi</label>
+            </div>
+            <div class="form-group">
+                <label><input type="checkbox" name="nearExit" /> Soovin lähemal väljapääsule</label>
+            </div>
+            <button type="submit">Soovita istekohti</button>
+        </form>
+    </div>
 
-<!-- Kui soovitatud istekohad on olemas, kuvatakse need kasutajale -->
-<div th:if="${recommendedSeats}">
-    <h3>Soovitatud istekoht:</h3>
-    <ul>
-        <li th:each="seat : ${recommendedSeats}" th:text="${seat.seatId}">1A</li>
-    </ul>
+    <!-- Tingimuslik kuvamine: kui recommendedSeats on tühi, kuvatakse sõnum, vastasel juhul loend -->
+    <div>
+        <div th:if="${#lists.isEmpty(recommendedSeats)}">
+            <h3>Kahjuks sellist kohta ei ole saadaval.</h3>
+        </div>
+        <div th:if="${not #lists.isEmpty(recommendedSeats)}">
+            <h3>Soovitatud istekohti:</h3>
+            <ul class="result-list">
+                <li th:each="seat : ${recommendedSeats}" th:text="${seat.seatId}">12A</li>
+            </ul>
+        </div>
+    </div>
+
+    <p class="mt-4"><a href="/flights">Tagasi lennuplaani</a></p>
 </div>
-
-<p><a href="/flights">Tagasi lennuplaani juurde</a></p>
 </body>
 </html>

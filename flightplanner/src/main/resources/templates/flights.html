@@ -1,52 +1,80 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Lennuplaan</title>
-<style>
-    table {
-    width: 100%;
-    border-collapse: collapse;
-  }
-  th, td {
-  border: 1px solid #000;
-  padding: 8px;
-  text-align: left;
-  }
-  th {
-  background-color: #f2f2f2;
-  }
-  a {
-  text-decoration: none;
-  color: blue;
-  }
-</style>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .filter-form {
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            background: #f9f9f9;
+        }
+        .filter-form input,
+        .filter-form button {
+            margin-right: 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ccc;
+            padding: 8px;
+        }
+        th {
+            background: #f4f4f4;
+        }
+    </style>
 </head>
 <body>
 <h1>Lennuplaan</h1>
-<!-- Tabel kus kuvatakse lennuandmed -->
+<!-- Filtreerimise vorm -->
+<form class="filter-form" method="get" action="/flights">
+    <label>
+        Sihtkoht:
+        <input type="text" name="destination" placeholder="Sisesta sihtkoht" />
+    </label>
+    <label>
+        Kuupäev:
+        <input type="date" name="date" />
+    </label>
+    <label>
+        Lennuaeg:
+        <input type="time" name="time" />
+    </label>
+    <label>
+        Hind (max):
+        <input type="number" name="maxPrice" step="0.01" placeholder="Max hind" />
+    </label>
+    <button type="submit">Otsi</button>
+</form>
+
 <table>
     <thead>
     <tr>
         <th>ID</th>
-        <th>Kuupäev</th>
         <th>Sihtkoht</th>
-        <th>Aeg</th>
+        <th>Kuupäev</th>
+        <th>Lennu aeg</th>
         <th>Hind</th>
-        <th>Lisa valikud</th>
+        <th>Tegevus</th>
     </tr>
     </thead>
     <tbody>
-    <!-- Lennu andmed tulevad flights mudelist hetkeseisuga -->
     <tr th:each="flight : ${flights}">
-        <td th:text="${flight.id}">1</td>
-        <td th:text="${flight.date}">Kuupäev</td>
-        <td th:text="${flight.destination}">Sihtkoht</td>
-        <td th:text="${flight.time}">Aeg</td>
-        <td th:text="${flight.price}">Hind</td>
+        <td th:text="${flight.id}"></td>
+        <td th:text="${flight.destination}"></td>
+        <td th:text="${flight.date}"></td>
+        <td th:text="${flight.time}"></td>
+        <td th:text="${flight.price}"></td>
         <td><a th:href="@{'/flights/' + ${flight.id}}">Vaata detaile</a></td>
     </tr>
     </tbody>
 </table>
-</body>>
+</body>
 </html>

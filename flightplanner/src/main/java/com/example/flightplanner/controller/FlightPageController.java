@@ -9,6 +9,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 /**
@@ -24,13 +26,35 @@ public class FlightPageController {
     private SeatService seatService;
 
     /**
-     * Kuvab lennuplaani.
-     * URL: GET /flights
+     * Kuvab lennuplaani. Filtreerimise parameetrid on valikulised.
+     * URL: GET /flights?destination=...&date=...&time=...&maxPrice=...
      */
     @GetMapping("/flights")
-    public String flightsPage(Model model) {
-        model.addAttribute("flights", flightService.getAllFlights());
-        return "flights";  // otsib faili flights.html
+    public String flightsPage(@RequestParam(required = false) String destination,
+                              @RequestParam(required = false) String date,
+                              @RequestParam(required = false) String time,
+                              @RequestParam(required = false) Double maxPrice,
+                              Model model) {
+        List<Flight> flights;
+        LocalDate parsedDate = null;
+        LocalTime parsedTime = null;
+        try {
+            if (date != null && !date.isEmpty()) {
+                parsedDate = LocalDate.parse(date);
+            }
+            if (time != null && !time.isEmpty()) {
+                parsedTime = LocalTime.parse(time);
+            }
+        } catch (Exception e) {
+            // Kui parsimine ebaõnnestub, jäta filter kasutamata või lisa error-sõnum
+        }
+        if ((destination == null || destination.isEmpty()) && parsedDate == null && parsedTime == null && maxPrice == null) {
+            flights = flightService.getAllFlights();
+        } else {
+            flights = flightService.getFilteredFlights(destination, parsedDate, parsedTime, maxPrice);
+        }
+        model.addAttribute("flights", flights);
+        return "flights";
     }
 
     /**
@@ -41,12 +65,12 @@ public class FlightPageController {
     public String flightDetail(@PathVariable Long id, Model model) {
         Flight flight = flightService.getFlightById(id);
         if (flight == null) {
-            return "redirect:/flights"; // kui lendu ei leita, suuna tagasi
+            return "redirect:/flights";
         }
         List<Seat> seatMap = seatService.generateSeatMap();
         model.addAttribute("flight", flight);
         model.addAttribute("seatMap", seatMap);
-        return "flight_detail";  // otsib faili flight_detail.html
+        return "flight_detail";
     }
 
     /**
@@ -60,7 +84,6 @@ public class FlightPageController {
                                  @RequestParam(defaultValue = "false") boolean extraLegroom,
                                  @RequestParam(defaultValue = "false") boolean nearExit,
                                  Model model) {
-        // Deklareerime "flight" muutuja
         Flight flight = flightService.getFlightById(id);
         if (flight == null) {
             return "redirect:/flights";
