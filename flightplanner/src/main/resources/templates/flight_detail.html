@@ -2,9 +2,9 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Lennu detailid</title>
+    <title>Lennu plaan</title>
     <style>
-        /* Üldised stiilid */
+        /* Üldine lehe stiil */
         body {
           font-family: Arial, sans-serif;
           background: #f7f7f7;
@@ -17,68 +17,85 @@
           margin: auto;
           background: #fff;
           padding: 20px;
-          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+          box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+          position: relative;
         }
         h1, h2, h3 {
-          color: #333;
           margin-bottom: 20px;
         }
-
-        /* Lennu põhiteave */
         .flight-info p {
           margin: 5px 0;
         }
 
-        /* Istekohtade plaan: kasutame CSS Gridi */
+        /*
+          Istekohtade plaan – 6 veergu (A-F),
+          grid-gap: 10px (veergudevahe),
+          Istme laiuseks 30px,
+          pseudoelemendi abil teeme laia vahekäigu. Vähemalt tahaks kasutada pseudoelementi selle tegemiseks, aga miskipärast see ei tööta ja ma ei saa aru miks
+        */
         .seat-map {
           display: grid;
-          grid-template-columns: repeat(6, 1fr); /* 6 istet igas reas */
-          grid-gap: 10px;
+          grid-template-columns: repeat(6, 30px); /* 6 veergu, igaüks 30px lai */
+          grid-gap: 10px;                         /* 10px vahe veergude ja ridade vahel */
+          position: relative;
           margin-bottom: 20px;
+          padding: 20px;                          /* Ruum pseudoelemendi jaoks */
+          justify-content: center;                /* Paneme istmete joonduse keskele */
+          z-index: 2;                             /* Istmed pseudoelemendist eespool */
         }
+        .seat-map::before {
+          content: "";
+          position: absolute;
+          top: 20px;
+          bottom: 20px;
+          /*
+             Arvutus:
+             - 3 veergu * 30px = 90px
+             - 3 vahet * 10px = 30px
+             - seat-map vasak padding 20px
+             Kokku = 90 + 30 + 20 = 140px, sealt algab vahekäik (ideaalis)
+          */
+          left: calc((30px * 3) + (10px * 3) + 20px);
+          width: 70px;                /* vahekäigu laius */
+          background: #f7f7f7;        /* sama värv kui taust */
+          pointer-events: none;       /* klikk ei mõjuta pseudoelemeni */
+          z-index: 1;                 /* istmed (z-index:2) on sellest eespool */
+        }
+
+        /* Istme stiilid */
         .seat {
           background: #e0e0e0;
           border: 1px solid #ccc;
-          padding: 15px;
+          padding: 5px;
           text-align: center;
+          font-size: 12px;
           font-weight: bold;
           cursor: pointer;
           transition: background 0.3s;
         }
         .seat.available {
-          background: #dff0d8;  /* roheline, kui vaba */
+          background: #dff0d8; /* roheline – vaba */
         }
         .seat.taken {
-          background: #f2dede;  /* punakane, kui hõivatud */
+          background: #f2dede; /* punane – hõivatud */
+          cursor: not-allowed;
         }
-        .seat:hover {
-          opacity: 0.8;
+        .seat.selected {
+          background: #ffeeba; /* kollane – hetkel valitud */
         }
 
-        /* Vormi stiil */
+        /* Vormid ja nupud */
         .form-section {
           margin-top: 20px;
           padding: 15px;
           border: 1px solid #ccc;
           background: #fafafa;
         }
-        .form-group {
-          margin-bottom: 15px;
-        }
-        label {
-          display: block;
-          margin-bottom: 5px;
-        }
-        input[type="number"],
-        input[type="checkbox"] {
-          padding: 8px;
-          margin-top: 5px;
-        }
         button {
           background: #007bff;
           color: white;
           border: none;
-          padding: 10px 20px;
+          padding: 8px 16px;
           cursor: pointer;
           transition: background 0.3s;
         }
@@ -86,7 +103,7 @@
           background: #0056b3;
         }
 
-        /* Loendi stiil (soovitatud istekohad) */
+        /* Soovitatud istmete stiil */
         .result-list {
           list-style: none;
           padding: 0;
@@ -97,7 +114,6 @@
           padding: 10px;
           border: 1px solid #ddd;
         }
-
         a {
           text-decoration: none;
           color: #007bff;
@@ -110,18 +126,19 @@
 <body>
 <div class="container">
     <h1>Lennu detailid</h1>
+
     <!-- Lennu põhiteave -->
     <div class="flight-info">
         <p><strong>ID:</strong> <span th:text="${flight.id}"></span></p>
         <p><strong>Sihtkoht:</strong> <span th:text="${flight.destination}"></span></p>
         <p><strong>Kuupäev:</strong> <span th:text="${flight.date}"></span></p>
         <p><strong>Lennu aeg:</strong> <span th:text="${flight.time}"></span></p>
-        <p><strong>Hind:</strong> <span th:text="${flight.price}"></span></p>
+        <p><strong>Hind:</strong> <span th:text="${T(java.lang.String).format('%.0f €', flight.price)}"></span></p>
     </div>
 
     <h2>Istekohad (Lennuki plaan)</h2>
-    <!-- Istekohtade plaan CSS Gridiga -->
     <div class="seat-map">
+        <!-- seatMap: 6 veergu -> A-F. Kasutame pseudoelementi .seat-map::before, et tekitada lai vahe pärast 3. veergu -->
         <div th:each="seat : ${seatMap}"
              class="seat"
              th:text="${seat.seatId}"
@@ -130,42 +147,71 @@
         </div>
     </div>
 
-    <!-- Vormi osa, kus kasutaja saab sisestada eelistused -->
+    <!-- Nupp, millega kinnitatakse istmete valik -->
+    <button id="confirmSelection">Kinnita valik</button>
+
+    <!-- Vorm "Soovitatud istekohti": see eeldab, et POST-päring suunatakse meetodisse, mis kasutab seatService.recommendSeats(...) -->
     <div class="form-section">
-        <h2>Soovitatud istekohti</h2>
+        <h2>Soovitatud istekoht/kohad</h2>
+        <!-- Vorm viib POST /flights/{id}/recommend -->
         <form th:action="@{'/flights/' + ${flight.id} + '/recommend'}" method="post">
-            <div class="form-group">
+            <div>
                 <label>Istekohtade arv:
-                    <input type="number" name="count" min="1" required style="width: 100px;"/>
+                    <input type="number" name="count" min="1" required style="width: 60px;"/>
                 </label>
             </div>
-            <div class="form-group">
-                <label><input type="checkbox" name="window" /> Soovin akna all olevat istet</label>
+            <div>
+                <label><input type="checkbox" name="window" /> Soovin akna all olevat kohta</label>
             </div>
-            <div class="form-group">
+            <div>
                 <label><input type="checkbox" name="extraLegroom" /> Soovin rohkem jalaruumi</label>
             </div>
-            <div class="form-group">
-                <label><input type="checkbox" name="nearExit" /> Soovin lähemal väljapääsule</label>
+            <div>
+                <label><input type="checkbox" name="nearExit" /> Soovin olla lähemal väljapääsule</label>
             </div>
-            <button type="submit">Soovita istekohti</button>
+            <button type="submit">Otsi</button>
         </form>
-    </div>
 
-    <!-- Tingimuslik kuvamine: kui recommendedSeats on tühi, kuvatakse sõnum, vastasel juhul loend -->
-    <div>
-        <div th:if="${#lists.isEmpty(recommendedSeats)}">
-            <h3>Kahjuks sellist kohta ei ole saadaval.</h3>
+        <div th:if="${recommendedSeats != null}">
+            <div th:if="${#lists.isEmpty(recommendedSeats)}">
+                <h3>Kahjuks sellist kohta ei ole saadaval.</h3>
+            </div>
+            <div th:if="${not #lists.isEmpty(recommendedSeats)}">
+                <h3>Soovitatud istekoht/kohad:</h3>
+                <ul class="result-list">
+                    <li th:each="seat : ${recommendedSeats}" th:text="${seat.seatId}">12A</li>
+                </ul>
+            </div>
         </div>
-        <div th:if="${not #lists.isEmpty(recommendedSeats)}">
-            <h3>Soovitatud istekohti:</h3>
-            <ul class="result-list">
-                <li th:each="seat : ${recommendedSeats}" th:text="${seat.seatId}">12A</li>
-            </ul>
-        </div>
-    </div>
 
-    <p class="mt-4"><a href="/flights">Tagasi lennuplaani</a></p>
+    <p><a href="/flights">Tagasi lendude juurde</a></p>
 </div>
+
+<script>
+    // JavaScripti osa, mis muudab klõpsatavad (available) istmed valitavaks
+    document.addEventListener("DOMContentLoaded", function() {
+        const seats = document.querySelectorAll('.seat.available');
+        seats.forEach(function(seat) {
+            seat.addEventListener('click', function() {
+                seat.classList.toggle('selected');
+            });
+        });
+
+        // "Kinnita valik" nupuu vajutamisel edasi juhtuv? Keeruline on eesti keeles õigeid sõnu valida programmeerimis terminite jaoks :)
+        document.getElementById('confirmSelection').addEventListener('click', function() {
+            const selectedSeats = document.querySelectorAll('.seat.selected');
+            if(selectedSeats.length === 0) {
+                alert("Palun vali vähemalt üks koht!");
+                return;
+            }
+            let seatIds = [];
+            selectedSeats.forEach(function(seat) {
+                seatIds.push(seat.textContent.trim());
+            });
+            // Kuvab valitud kohad pop upina hetkel
+            alert("Valitud istmed: " + seatIds.join(", "));
+        });
+    });
+</script>
 </body>
 </html>

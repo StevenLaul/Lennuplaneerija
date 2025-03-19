@@ -22,8 +22,8 @@ public class SeatService {
                 boolean extraLegroom = (i <= 2);
                 boolean nearExit = (i == rows);
                 Seat seat = new Seat(seatId, isWindow, extraLegroom, nearExit);
-                // Märgime juhuslikult mõningad istmed hõivatuks (20% tõenäosus)
-                seat.setTaken(random.nextDouble() < 0.2);
+                // Märgime juhuslikult mõningad istmed hõivatuks (30% tõenäosusega)
+                seat.setTaken(random.nextDouble() < 0.3);
                 seatMap.add(seat);
             }
         }
@@ -42,7 +42,7 @@ public class SeatService {
                 availableSeats.add(seat);
             }
         }
-        // Lihtsustatult - tagastame esimese sobiva istme, kui on muidugi üldse saadaval
+        // Tagastab sobiva istme(d), kui on saadaval
         return availableSeats.size() >= count ? availableSeats.subList(0, count) : availableSeats;
     }
 }

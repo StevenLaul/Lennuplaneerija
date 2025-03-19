@@ -6,75 +6,129 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 20px;
+            background: #f7f7f7;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        .container {
+            max-width: 900px;
+            margin: auto;
+            background: #fff;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        h1 {
+            margin-bottom: 20px;
         }
         .filter-form {
             margin-bottom: 20px;
-            padding: 10px;
+            padding: 15px;
             border: 1px solid #ccc;
-            background: #f9f9f9;
+            background: #fafafa;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
         }
-        .filter-form input,
+        .filter-form label {
+            display: flex;
+            flex-direction: column;
+            font-weight: bold;
+        }
+        .filter-form input[type="text"],
+        .filter-form input[type="date"],
+        .filter-form input[type="time"],
+        .filter-form input[type="number"] {
+            margin-top: 5px;
+            padding: 5px;
+            font-size: 14px;
+            width: 150px;
+        }
         .filter-form button {
-            margin-right: 10px;
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            cursor: pointer;
+            transition: background 0.3s;
+            margin-top: 18px;
+            height: 38px;
+        }
+        .filter-form button:hover {
+            background: #0056b3;
         }
         table {
             width: 100%;
             border-collapse: collapse;
         }
+        thead {
+            background: #f4f4f4;
+        }
         th, td {
             border: 1px solid #ccc;
-            padding: 8px;
+            padding: 10px;
+            text-align: left;
         }
         th {
-            background: #f4f4f4;
+            font-weight: bold;
+        }
+        a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
 <body>
-<h1>Lennuplaan</h1>
-<!-- Filtreerimise vorm -->
-<form class="filter-form" method="get" action="/flights">
-    <label>
-        Sihtkoht:
-        <input type="text" name="destination" placeholder="Sisesta sihtkoht" />
-    </label>
-    <label>
-        Kuupäev:
-        <input type="date" name="date" />
-    </label>
-    <label>
-        Lennuaeg:
-        <input type="time" name="time" />
-    </label>
-    <label>
-        Hind (max):
-        <input type="number" name="maxPrice" step="0.01" placeholder="Max hind" />
-    </label>
-    <button type="submit">Otsi</button>
-</form>
+<div class="container">
+    <h1>Lennuplaan</h1>
+    <!-- Filtreerimise vorm: GET-päring /flights?sihtkoht=...&kuupäev=... jne -->
+    <form class="filter-form" method="get" action="/flights">
+        <label>
+            Sihtkoht:
+            <input type="text" name="destination" placeholder="Sisesta sihtkoht" />
+        </label>
+        <label>
+            Kuupäev:
+            <input type="date" name="date" />
+        </label>
+        <label>
+            Lennuaeg:
+            <input type="time" name="time" />
+        </label>
+        <label>
+            Hind (max):
+            <input type="number" name="maxPrice" step="0.01" placeholder="Max hind" />
+        </label>
+        <button type="submit">Otsi</button>
+    </form>
 
-<table>
-    <thead>
-    <tr>
-        <th>ID</th>
-        <th>Sihtkoht</th>
-        <th>Kuupäev</th>
-        <th>Lennu aeg</th>
-        <th>Hind</th>
-        <th>Tegevus</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="flight : ${flights}">
-        <td th:text="${flight.id}"></td>
-        <td th:text="${flight.destination}"></td>
-        <td th:text="${flight.date}"></td>
-        <td th:text="${flight.time}"></td>
-        <td th:text="${flight.price}"></td>
-        <td><a th:href="@{'/flights/' + ${flight.id}}">Vaata detaile</a></td>
-    </tr>
-    </tbody>
-</table>
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Sihtkoht</th>
+            <th>Kuupäev</th>
+            <th>Lennu aeg</th>
+            <th>Hind</th>
+            <th>Tegevus</th>
+        </tr>
+        </thead>
+        <tbody>
+        <!-- Kuvab lennud, flight on iga rida. -->
+        <tr th:each="flight : ${flights}">
+            <td th:text="${flight.id}">1</td>
+            <td th:text="${flight.destination}">Sihtkoht</td>
+            <td th:text="${flight.date}">2025-03-20</td>
+            <td th:text="${flight.time}">10:30</td>
+            <td th:text="${T(java.lang.String).format('%.0f €', flight.price)}"></td>
+            <!-- Link detailvaatesse, kus ID lisatakse URL-i ja ilmub lennukiplaan/istekohtade valik -->
+            <td><a th:href="@{'/flights/' + ${flight.id}}">Vaata detaile</a></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
 </body>
 </html>

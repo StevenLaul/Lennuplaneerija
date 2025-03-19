@@ -13,9 +13,9 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
-/**
- * Kontroller, mis haldab veebipäringuid ning tagastab Thymeleaf mallid.
- */
+
+//Kontroller, mis haldab veebipäringuid ning tagastab Thymeleaf abil vastused päringutele.
+
 @Controller
 public class FlightPageController {
 
@@ -25,10 +25,7 @@ public class FlightPageController {
     @Autowired
     private SeatService seatService;
 
-    /**
-     * Kuvab lennuplaani. Filtreerimise parameetrid on valikulised.
-     * URL: GET /flights?destination=...&date=...&time=...&maxPrice=...
-     */
+//Kuvab lennuplaani. Filtreerimise parameetrid on muudetavad
     @GetMapping("/flights")
     public String flightsPage(@RequestParam(required = false) String destination,
                               @RequestParam(required = false) String date,
@@ -46,7 +43,7 @@ public class FlightPageController {
                 parsedTime = LocalTime.parse(time);
             }
         } catch (Exception e) {
-            // Kui parsimine ebaõnnestub, jäta filter kasutamata või lisa error-sõnum
+            // Kui ebaõnnestub, jätab filtri kasutamata ja lisab error sõnumi
         }
         if ((destination == null || destination.isEmpty()) && parsedDate == null && parsedTime == null && maxPrice == null) {
             flights = flightService.getAllFlights();
@@ -57,10 +54,8 @@ public class FlightPageController {
         return "flights";
     }
 
-    /**
-     * Kuvab üksiku lennu detailid koos istmekoha plaaniga.
-     * URL: GET /flights/{id}
-     */
+    //Kuvab lennu detailid koos istmekoha plaaniga.
+
     @GetMapping("/flights/{id}")
     public String flightDetail(@PathVariable Long id, Model model) {
         Flight flight = flightService.getFlightById(id);
@@ -73,10 +68,8 @@ public class FlightPageController {
         return "flight_detail";
     }
 
-    /**
-     * Töötleb vormi, mis soovitab istekohti kasutaja eelistustega.
-     * URL: POST /flights/{id}/recommend
-     */
+//Vorm, kust saab valida kus täpsemalt istuda tahetakse ja seejärel soovitab kohti
+
     @PostMapping("/flights/{id}/recommend")
     public String recommendSeats(@PathVariable Long id,
                                  @RequestParam int count,
