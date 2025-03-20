@@ -37,7 +37,7 @@ Kuidas Rakendus Töötab?
 Kuidas Rakendust Käivitada?
 
 1. Ehita ja käivita projekt:
-   - Veendu, et sul on Java ja Maven õigesti seadistatud.
+   - Java ja Maven õigesti seadistatud.
    - Käivita projekt (mina ise kasutan IntelliJ IDEA community editionit). 
    - Rakendus käivitub ja Tomcat alustab töötamist pordil 8080.
    - Ava brauseris http://localhost:8080/flights
