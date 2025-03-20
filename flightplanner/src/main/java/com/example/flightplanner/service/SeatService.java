@@ -16,12 +16,20 @@ public class SeatService {
     public List<Seat> generateSeatMap() {
         List<Seat> seatMap = new ArrayList<>();
         for (int i = 1; i <= rows; i++) {
+            String seatClass;
+            if (i <= 2) {
+                seatClass = "1. klass";
+            } else if (i <= 4) {
+                seatClass = "Äriklass";
+            } else {
+                seatClass = "Turistiklass";
+            }
             for (char seatChar : seatsPerRow) {
                 String seatId = i + String.valueOf(seatChar);
                 boolean isWindow = (seatChar == 'A' || seatChar == 'F');
                 boolean extraLegroom = (i <= 2);
                 boolean nearExit = (i == rows);
-                Seat seat = new Seat(seatId, isWindow, extraLegroom, nearExit);
+                Seat seat = new Seat(seatId, isWindow, extraLegroom, nearExit, seatClass);
                 // Märgime juhuslikult mõningad istmed hõivatuks (30% tõenäosusega)
                 seat.setTaken(random.nextDouble() < 0.3);
                 seatMap.add(seat);
