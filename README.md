@@ -37,7 +37,7 @@ Kuidas Rakendus Töötab?
 Kuidas Rakendust Käivitada?
 
 1. Ehita ja käivita projekt:
-   - Veendu, et sul on Java ja Maven õigesti seadistatud.
+   - Java ja Maven õigesti seadistatud.
    - Käivita projekt (mina ise kasutan IntelliJ IDEA community editionit). 
    - Rakendus käivitub ja Tomcat alustab töötamist pordil 8080.
    - Ava brauseris http://localhost:8080/flights
@@ -46,14 +46,14 @@ Kuidas Rakendust Käivitada?
 Arendamis noted:
 Projektile kulus umbes 15–20 tundi. Alguses kulus aega kavandamisele ja osade võtetega kurssi viimine, seejärel parandasin errorit, mis oli tingitud sellest, et panin projekti põhikaustaks liiga üldise kausta ja IntelliJ ei suutnud projektist aru saada, aga selle arusaamiseks kulus mul aega. Seejärel oli üldjoontes töö üsna sujuv kui väljaarvata mõned pisidetailid.
 Töö käigus tehtud märkmed ja keerukused:
-•	Istmete erinevad klassid: Erinevad klassid (1. klass, äriklass, turistiklass) ja kuidas kuvada istmete „tooltipid“, et kasutaja saaks kiiresti aru, millisesse klassi iste kuulub. See osa nõudis täpset CSS-i ja JavaScripti kombineerimist ning abi sain dokumentatsioonilt ning Stack Overflow postitustelt.
-•	Istekohtade soovitamise loogika:
-SeatService genereerib lennuki istmekoha plaani, määrates seatidele juhuslikult “hõivatud” staatuse. See lahendus oli mõnevõrra keerukas, kuna tuli arvestada erinevate istmete klasside ja nende visuaalse eristamisega. Lahenduse testimisel tekkisid küsimused istmete paigutuse ja CSS Grid-i kasutamise kohta, millele aitas lahendus leida ametlik Thymeleaf ja CSS dokumentatsioon.
-•	Filtreerimise funktsionaalsus:
+-	Istmete erinevad klassid: Erinevad klassid (1. klass, äriklass, turistiklass) ja kuidas kuvada istmete „tooltipid“, et kasutaja saaks kiiresti aru, millisesse klassi iste kuulub. See osa nõudis täpset CSS-i ja JavaScripti kombineerimist ning abi sain dokumentatsioonilt ning Stack Overflow postitustelt.
+-	Istekohtade soovitamise loogika:
+SeatService genereerib lennuki istmekoha plaani, määrates istmetele juhuslikult “hõivatud” staatuse. See lahendus oli mõnevõrra keerukas, kuna tuli arvestada erinevate istmete klasside ja nende visuaalse eristamisega. Lahenduse testimisel tekkisid küsimused istmete paigutuse ja CSS Grid-i kasutamise kohta, millele aitas lahendus leida ametlik Thymeleaf ja CSS dokumentatsioon.
+-	Filtreerimise funktsionaalsus:
 Lennuplaani andmete filtreerimine on tehtud FlightService abil. Filtreerimismeetodis eeldatakse, et kui mingit filtrit ei esine (väärtus on null või tühi), siis seda filtrit ignoreeritakse. 
-•	Probleemid ja lahendused:
-•	Soovitatud istekohtade kuvamine:
+-	Probleemid ja lahendused:
+-	Soovitatud istekohtade kuvamine:
 Sõnumit "Kahjuks sellist kohta ei ole saadaval" kuvati juba enne, kui kasutaja üldse kasutas soovitatud istekohtade otsimise tööriista, sest recommendedSeats oli null. Selle lahendamiseks lisasin kontrolli, et recommendedSeats osa kuvatakse ainult siis kui seda reaalselt kasutatakse.
-• Püsinud probleemid/ mida edasi arendada:
+- Püsinud probleemid/ mida edasi arendada:
 Tahaksin panna istmeplaani taustaks lennuki ja need istmed siis sobitada kokku plaaniga, et anda kasutajale kõvasti parem visuaalne „idee“, kus koht asub jne. Ilmselt saaks lahendada täpsema CSS positsioneerimisega ja kinldad mõõdud määrata, et istmed klapiks pildil olevatega. Hea näide, mis mulle endale meeldib on Finnairi lahendus istmeplaanist.
 Istmete vahekäiku ei ole näha, alguses oli, aga kui ma muutsin istmete suuruse väiksemaks siis pseduoelement enam ei tee vahe istmete vahele ja sellega ma jäingi hetkel jänni.
