@@ -76,13 +76,14 @@ public class FlightPageController {
                                  @RequestParam(defaultValue = "false") boolean window,
                                  @RequestParam(defaultValue = "false") boolean extraLegroom,
                                  @RequestParam(defaultValue = "false") boolean nearExit,
+                                 @RequestParam(defaultValue = "false") boolean adjacent,
                                  Model model) {
         Flight flight = flightService.getFlightById(id);
         if (flight == null) {
             return "redirect:/flights";
         }
         List<Seat> seatMap = seatService.generateSeatMap();
-        List<Seat> recommendedSeats = seatService.recommendSeats(seatMap, count, window, extraLegroom, nearExit);
+        List<Seat> recommendedSeats = seatService.recommendSeats(seatMap, count, window, extraLegroom, nearExit, adjacent);
         model.addAttribute("flight", flight);
         model.addAttribute("seatMap", seatMap);
         model.addAttribute("recommendedSeats", recommendedSeats);

@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Lennud</title>
+    <title>Lennu detailid</title>
     <style>
         /* Üldine stiil */
         body {
@@ -25,16 +25,14 @@
         .flight-info p {
           margin: 5px 0;
         }
-
-        /* Istmete paigutus – kasutame gridi 6 veeruga */
+        /* Istmeplaani stiil */
         .seat-map {
           display: grid;
-          grid-template-columns: repeat(6, 50px); /* 6 veergu, iga 50px lai */
+          grid-template-columns: repeat(6, 50px);
           grid-gap: 10px;
           margin-bottom: 20px;
           justify-content: center;
         }
-        /* Istmete stiil */
         .seat {
           background: #e0e0e0;
           border: 1px solid #ccc;
@@ -45,30 +43,19 @@
           font-weight: bold;
           cursor: pointer;
           transition: background 0.3s;
-          line-height: 50px; /* et tekst tsentreerituks */
+          line-height: 50px;
         }
         .seat.available {
-          background: #dff0d8; /* roheline – vaba */
+          background: #dff0d8;
         }
         .seat.taken {
-          background: #f2dede; /* punane – hõivatud */
+          background: #f2dede;
           cursor: not-allowed;
         }
         .seat.selected {
-          background: #ffeeba; /* kollane – valitud */
+          background: #ffeeba;
         }
-        /* Värv erinevatele klassidele */
-        .seat[data-seat-class='1. klass'] {
-          border-color: #007bff;
-        }
-        .seat[data-seat-class='äriklass'] {
-          border-color: #28a745;
-        }
-        .seat[data-seat-class='turistiklass'] {
-          border-color: #ffc107;
-        }
-
-        /* Vormide ja nupu stiil */
+        /* Vormi stiil */
         .form-section {
           margin-top: 20px;
           padding: 15px;
@@ -107,7 +94,7 @@
 </head>
 <body>
 <div class="container">
-    <h1>Lennud</h1>
+    <h1>Lennu detailid</h1>
 
     <!-- Lennu põhiteave -->
     <div class="flight-info">
@@ -119,7 +106,6 @@
     </div>
 
     <h2>Istekohad (Lennuki plaan)</h2>
-    <!-- Seat map: iga istme jaoks kuvatakse seatId ja tooltip näitab seatClass -->
     <div class="seat-map">
         <div th:each="seat : ${seatMap}"
              class="seat"
@@ -130,11 +116,10 @@
         </div>
     </div>
 
-    <!-- "Kinnita valik" nupp, mis kontrollib valitud istekohtade saadavust -->
     <button id="confirmSelection">Kinnita valik</button>
 
     <div class="form-section">
-        <h2>Soovitatud istekohti</h2>
+        <h2>Soovitatud istekohad</h2>
         <form th:action="@{'/flights/' + ${flight.id} + '/recommend'}" method="post">
             <div>
                 <label>Istekohtade arv:
@@ -149,6 +134,9 @@
             </div>
             <div>
                 <label><input type="checkbox" name="nearExit" /> Soovin lähemal väljapääsule</label>
+            </div>
+            <div>
+                <label><input type="checkbox" name="adjacent" /> Soovin istekohti kõrvuti</label>
             </div>
             <button type="submit">Otsi</button>
         </form>
@@ -165,11 +153,10 @@
         </div>
     </div>
 
-    <p><a href="/flights">Tagasi lennuplaani</a></p>
+    <p><a href="/flights">Tagasi lennuplaanile</a></p>
 </div>
 
 <script>
-    // Muudab istmed valitavaks ehk saab selectida endale istmeid ja need muutuva aktiivseks
     document.addEventListener("DOMContentLoaded", function() {
         const seats = document.querySelectorAll('.seat.available');
         seats.forEach(function(seat) {
