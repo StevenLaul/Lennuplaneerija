@@ -43,7 +43,7 @@ Kuidas Rakendust Käivitada?
    - Ava brauseris http://localhost:8080/flights
 
 
-Arendamis noted:
+Arendamisprotsess / tähelepanekud:
 Projektile kulus umbes 15–20 tundi. Alguses kulus aega kavandamisele ja osade võtetega kurssi viimine, seejärel parandasin errorit, mis oli tingitud sellest, et panin projekti põhikaustaks liiga üldise kausta ja IntelliJ ei suutnud projektist aru saada, aga selle arusaamiseks kulus mul aega. Seejärel oli üldjoontes töö üsna sujuv kui väljaarvata mõned pisidetailid.
 Töö käigus tehtud märkmed ja keerukused:
 -	Istmete erinevad klassid: Erinevad klassid (1. klass, äriklass, turistiklass) ja kuidas kuvada istmete „tooltipid“, et kasutaja saaks kiiresti aru, millisesse klassi iste kuulub. See osa nõudis täpset CSS-i ja JavaScripti kombineerimist ning abi sain dokumentatsioonilt ning Stack Overflow postitustelt.
@@ -57,3 +57,5 @@ Sõnumit "Kahjuks sellist kohta ei ole saadaval" kuvati juba enne, kui kasutaja 
 - Püsinud probleemid/ mida edasi arendada:
 Tahaksin panna istmeplaani taustaks lennuki ja need istmed siis sobitada kokku plaaniga, et anda kasutajale kõvasti parem visuaalne „idee“, kus koht asub jne. Ilmselt saaks lahendada täpsema CSS positsioneerimisega ja kinldad mõõdud määrata, et istmed klapiks pildil olevatega. Hea näide, mis mulle endale meeldib on Finnairi lahendus istmeplaanist.
 Istmete vahekäiku ei ole näha, alguses oli, aga kui ma muutsin istmete suuruse väiksemaks siis pseduoelement enam ei tee vahe istmete vahele ja sellega ma jäingi hetkel jänni.
+
+Edasi arendades võiks lisada lennukiistemetele taustapildiks reaalse lennukiplaani, et oleks aru saada, kus täpsemalt iste asub, valides mitu istet kõrvuti pakub programm ka kohti mis on kinni, see tuleks ära fixida.
